@@ -1,0 +1,796 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Caso 1 – El experto que rara vez se equivoca | NovaLog</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'DM Sans', sans-serif; background: #F8F7FF; color: #1E1B4B; min-height: 100vh; }
+
+  .syne { font-family: 'Syne', sans-serif; }
+
+  /* Paleta semántica del curso */
+  :root {
+    --primario: #4F46E5;
+    --secundario: #7C3AED;
+    --optimo: #059669;
+    --precaucion: #D97706;
+    --riesgo: #EA580C;
+    --critico: #DC2626;
+  }
+
+  /* Header */
+  .hero {
+    background: linear-gradient(135deg, #1E1B4B 0%, #312E81 60%, #4F46E5 100%);
+    padding: 2.5rem 2rem 2rem;
+    color: white;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; top: -60px; right: -60px;
+    width: 300px; height: 300px;
+    border-radius: 50%;
+    background: rgba(124,58,237,0.18);
+  }
+  .hero::after {
+    content: '';
+    position: absolute; bottom: -40px; left: 40%;
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    background: rgba(79,70,229,0.15);
+  }
+  .hero-badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 999px;
+    padding: 4px 14px;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    margin-bottom: 1rem;
+  }
+  .hero h1 { font-family: 'Syne', sans-serif; font-size: 2rem; font-weight: 800; line-height: 1.15; margin-bottom: 0.5rem; position: relative; z-index: 1; }
+  .hero p { font-size: 0.95rem; opacity: 0.82; max-width: 680px; position: relative; z-index: 1; }
+
+  /* Nav tabs */
+  .nav-tabs {
+    display: flex;
+    background: white;
+    border-bottom: 2px solid #E5E3FF;
+    overflow-x: auto;
+    position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 2px 8px rgba(79,70,229,0.08);
+  }
+  .tab-btn {
+    flex: 1; min-width: 140px;
+    padding: 1rem 0.5rem;
+    font-family: 'Syne', sans-serif; font-weight: 600; font-size: 0.82rem;
+    color: #6B7280;
+    background: transparent; border: none; cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s; letter-spacing: 0.01em;
+    white-space: nowrap;
+  }
+  .tab-btn.active { color: #4F46E5; border-bottom-color: #4F46E5; background: #F8F7FF; }
+  .tab-btn:hover:not(.active) { color: #4F46E5; background: #F8F7FF; }
+
+  /* Sections */
+  .section { display: none; padding: 2rem; max-width: 900px; margin: 0 auto; }
+  .section.active { display: block; }
+
+  /* Cards */
+  .card {
+    background: white;
+    border-radius: 16px;
+    border: 1.5px solid #E5E3FF;
+    padding: 1.5rem;
+    margin-bottom: 1.25rem;
+  }
+  .card-title {
+    font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1rem;
+    color: #4F46E5; margin-bottom: 0.75rem;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .card-icon {
+    width: 28px; height: 28px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+  }
+
+  /* Texto del caso */
+  .caso-text { font-size: 0.93rem; line-height: 1.75; color: #374151; }
+  .caso-text p { margin-bottom: 0.75rem; }
+  .highlight-box {
+    background: rgba(79,70,229,0.06);
+    border-left: 4px solid #4F46E5;
+    border-radius: 0 10px 10px 0;
+    padding: 1rem 1.25rem;
+    margin: 1rem 0;
+    font-size: 0.92rem; color: #312E81; font-weight: 500;
+  }
+
+  /* Personajes */
+  .persona-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; }
+  .persona-card {
+    background: white; border-radius: 14px;
+    border: 1.5px solid #E5E3FF;
+    padding: 1.25rem;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .persona-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(79,70,229,0.1); }
+  .persona-avatar {
+    width: 48px; height: 48px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Syne', sans-serif; font-weight: 700; font-size: 16px;
+    margin-bottom: 0.75rem;
+  }
+  .persona-name { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.95rem; margin-bottom: 2px; }
+  .persona-role { font-size: 0.78rem; font-weight: 500; margin-bottom: 0.6rem; }
+  .persona-desc { font-size: 0.82rem; line-height: 1.55; color: #4B5563; }
+  .tag {
+    display: inline-block; padding: 3px 10px;
+    border-radius: 999px; font-size: 0.72rem; font-weight: 600;
+    margin-top: 0.5rem;
+  }
+
+  /* Decisión */
+  .decision-central {
+    background: linear-gradient(135deg, #312E81, #4F46E5);
+    border-radius: 16px; padding: 1.5rem;
+    color: white; text-align: center; margin-bottom: 1.5rem;
+  }
+  .decision-central h3 { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.1rem; margin-bottom: 0.5rem; }
+  .decision-central p { font-size: 0.9rem; opacity: 0.88; }
+
+  .escenario-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+  @media (max-width: 600px) { .escenario-grid { grid-template-columns: 1fr; } }
+
+  .escenario-card {
+    border-radius: 14px; padding: 1.25rem;
+    border: 2px solid transparent;
+    transition: all 0.25s;
+    cursor: pointer;
+  }
+  .escenario-card:hover { transform: translateY(-2px); }
+  .escenario-card.opcion-a {
+    background: rgba(5,150,105,0.06);
+    border-color: rgba(5,150,105,0.25);
+  }
+  .escenario-card.opcion-b {
+    background: rgba(220,38,38,0.06);
+    border-color: rgba(220,38,38,0.25);
+  }
+  .escenario-card.opcion-a:hover { border-color: #059669; }
+  .escenario-card.opcion-b:hover { border-color: #DC2626; }
+  .escenario-title {
+    font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.95rem;
+    margin-bottom: 0.75rem; display: flex; align-items: center; gap: 8px;
+  }
+  .escenario-badge {
+    padding: 3px 10px; border-radius: 999px; font-size: 0.72rem; font-weight: 700;
+  }
+  .escenario-list { list-style: none; padding: 0; }
+  .escenario-list li {
+    font-size: 0.85rem; line-height: 1.55; padding: 0.4rem 0;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    display: flex; gap: 8px; align-items: flex-start;
+    color: #374151;
+  }
+  .escenario-list li:last-child { border-bottom: none; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; margin-top: 6px; flex-shrink: 0; }
+
+  /* Grilla empresarial */
+  .grilla-container { position: relative; }
+  .grilla-desc { font-size: 0.88rem; color: #6B7280; line-height: 1.6; margin-bottom: 1.25rem; }
+
+  .grilla-wrapper {
+    position: relative;
+    width: 100%; padding-bottom: 100%;
+    max-width: 520px; margin: 0 auto;
+  }
+  .grilla-inner {
+    position: absolute; inset: 0;
+    display: grid; grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 6px;
+  }
+
+  .cuadrante {
+    border-radius: 14px; padding: 1rem;
+    position: relative; overflow: hidden;
+    cursor: pointer;
+    transition: all 0.25s;
+    border: 2px solid transparent;
+  }
+  .cuadrante:hover { transform: scale(1.02); }
+  .cuadrante.selected { border-width: 2.5px; box-shadow: 0 6px 20px rgba(0,0,0,0.12); }
+
+  .cuadrante-label {
+    font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.8rem;
+    margin-bottom: 0.4rem;
+  }
+  .cuadrante-desc { font-size: 0.75rem; line-height: 1.4; }
+
+  .cuadrante-q1 { background: rgba(5,150,105,0.08); border-color: rgba(5,150,105,0.2); }
+  .cuadrante-q1 .cuadrante-label { color: #065F46; }
+  .cuadrante-q1 .cuadrante-desc { color: #047857; }
+  .cuadrante-q1.selected { border-color: #059669; }
+
+  .cuadrante-q2 { background: rgba(217,119,6,0.08); border-color: rgba(217,119,6,0.2); }
+  .cuadrante-q2 .cuadrante-label { color: #92400E; }
+  .cuadrante-q2 .cuadrante-desc { color: #B45309; }
+  .cuadrante-q2.selected { border-color: #D97706; }
+
+  .cuadrante-q3 { background: rgba(234,88,12,0.08); border-color: rgba(234,88,12,0.2); }
+  .cuadrante-q3 .cuadrante-label { color: #9A3412; }
+  .cuadrante-q3 .cuadrante-desc { color: #C2410C; }
+  .cuadrante-q3.selected { border-color: #EA580C; }
+
+  .cuadrante-q4 { background: rgba(220,38,38,0.08); border-color: rgba(220,38,38,0.2); }
+  .cuadrante-q4 .cuadrante-label { color: #7F1D1D; }
+  .cuadrante-q4 .cuadrante-desc { color: #991B1B; }
+  .cuadrante-q4.selected { border-color: #DC2626; }
+
+  .axis-label {
+    font-family: 'Syne', sans-serif; font-weight: 600; font-size: 0.7rem;
+    color: #6B7280; text-align: center; margin: 6px 0;
+  }
+  .axis-vertical {
+    writing-mode: vertical-lr; transform: rotate(180deg);
+    font-family: 'Syne', sans-serif; font-weight: 600; font-size: 0.7rem;
+    color: #6B7280; text-align: center; padding: 0 4px;
+  }
+
+  .grilla-layout {
+    display: flex; gap: 4px; align-items: center;
+  }
+  .grilla-right { flex: 1; }
+  .eje-y-labels {
+    display: flex; flex-direction: column; justify-content: space-between;
+    height: 100%;
+    font-family: 'Syne', sans-serif; font-size: 0.65rem; color: #9CA3AF; font-weight: 600;
+  }
+
+  .cuadrante-detail {
+    background: white; border-radius: 14px;
+    border: 1.5px solid #E5E3FF;
+    padding: 1.25rem; margin-top: 1rem;
+    animation: fadeIn 0.3s ease;
+  }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+  .detail-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.95rem; margin-bottom: 0.75rem; }
+  .detail-row { display: flex; gap: 1rem; margin-bottom: 0.5rem; }
+  .detail-col { flex: 1; }
+  .detail-col h5 { font-family: 'Syne', sans-serif; font-size: 0.78rem; font-weight: 700; color: #4F46E5; margin-bottom: 0.4rem; text-transform: uppercase; letter-spacing: 0.04em; }
+  .detail-col ul { list-style: none; }
+  .detail-col ul li { font-size: 0.82rem; color: #374151; padding: 3px 0; }
+
+  /* Riesgos y Oportunidades */
+  .ro-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  @media (max-width: 580px) { .ro-grid { grid-template-columns: 1fr; } }
+
+  .ro-card { border-radius: 14px; padding: 1.25rem; }
+  .ro-card.riesgo { background: rgba(220,38,38,0.06); border: 1.5px solid rgba(220,38,38,0.18); }
+  .ro-card.oportunidad { background: rgba(5,150,105,0.06); border: 1.5px solid rgba(5,150,105,0.18); }
+  .ro-title {
+    font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.88rem;
+    display: flex; align-items: center; gap: 8px; margin-bottom: 0.75rem;
+  }
+  .ro-card.riesgo .ro-title { color: #7F1D1D; }
+  .ro-card.oportunidad .ro-title { color: #065F46; }
+  .ro-item {
+    font-size: 0.83rem; line-height: 1.55; color: #374151;
+    padding: 0.45rem 0; border-bottom: 1px solid rgba(0,0,0,0.05);
+    display: flex; gap: 8px; align-items: flex-start;
+  }
+  .ro-item:last-child { border-bottom: none; }
+  .ro-dot { width: 8px; height: 8px; border-radius: 50%; margin-top: 6px; flex-shrink: 0; }
+  .ro-label {
+    display: inline-block; padding: 2px 8px; border-radius: 999px;
+    font-size: 0.68rem; font-weight: 700; margin-bottom: 2px;
+  }
+
+  /* Reflexión */
+  .diagnostico-box {
+    border-radius: 12px; padding: 1rem 1.25rem; margin-top: 1rem;
+    border: 1.5px solid transparent;
+  }
+  .diagnostico-titulo { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.88rem; margin-bottom: 0.4rem; }
+  .diagnostico-desc { font-size: 0.85rem; line-height: 1.6; }
+
+  .escenario-selector {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(185px, 1fr));
+    gap: 0.75rem;
+  }
+  .eval-option {
+    background: #FFFFFF;
+    border: 1.5px solid #E5E3FF;
+    border-radius: 12px;
+    padding: 0.95rem;
+    cursor: pointer;
+    text-align: left;
+    transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+  }
+  .eval-option:hover { transform: translateY(-2px); border-color: #4F46E5; }
+  .eval-option.active { border-color: #4F46E5; box-shadow: 0 8px 22px rgba(79,70,229,0.12); background: #F8F7FF; }
+  .eval-option-title { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 0.86rem; color: #312E81; margin-bottom: 4px; }
+  .eval-option-meta { font-size: 0.76rem; line-height: 1.4; color: #6B7280; }
+
+  .reset-btn {
+    background: #4F46E5; color: white;
+    border: none; border-radius: 10px; padding: 10px 20px;
+    font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.85rem;
+    cursor: pointer; transition: background 0.2s; margin-top: 1rem;
+  }
+  .reset-btn:hover { background: #4338CA; }
+
+  .pregunta-box {
+    background: linear-gradient(135deg, #312E81, #4F46E5);
+    border-radius: 14px; padding: 1.25rem;
+    color: white; margin-top: 1.5rem;
+  }
+  .pregunta-box h4 { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.9rem; margin-bottom: 0.5rem; opacity: 0.7; text-transform: uppercase; letter-spacing: 0.05em; }
+  .pregunta-box p { font-size: 0.95rem; line-height: 1.6; font-weight: 500; }
+  .pregunta-box ol { padding-left: 1.1rem; margin: 0; }
+  .pregunta-box li { font-size: 0.95rem; line-height: 1.55; font-weight: 500; margin-bottom: 0.55rem; }
+  .pregunta-box li:last-child { margin-bottom: 0; }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">Caso 1 · Teoría Sociotécnica</div>
+  <h1>El experto que rara vez se equivoca</h1>
+  <p>NovaLog — Dinámicas de poder, voz y decisión colectiva en equipos de mejora organizacional</p>
+</div>
+
+<nav class="nav-tabs" role="tablist">
+  <button class="tab-btn active" onclick="showTab('caso')" role="tab">📄 Texto del caso</button>
+  <button class="tab-btn" onclick="showTab('actores')" role="tab">👥 Actores clave</button>
+  <button class="tab-btn" onclick="showTab('escenarios')" role="tab">🔀 Escenarios</button>
+  <button class="tab-btn" onclick="showTab('grilla')" role="tab">⊞ Grilla y riesgos</button>
+  <button class="tab-btn" onclick="showTab('reflexion')" role="tab">🎯 Evaluación</button>
+</nav>
+
+<!-- TAB 1: CASO -->
+<section id="tab-caso" class="section active">
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon" style="background:rgba(79,70,229,0.1);">🏢</div>
+      Contexto organizacional
+    </div>
+    <div class="caso-text">
+      <p>NovaLog es una empresa peruana de logística que ha crecido rápidamente durante los últimos cuatro años. El crecimiento ha permitido abrir nuevas operaciones en distintas ciudades, pero también ha generado <strong>problemas de coordinación</strong> entre las áreas de ventas, operaciones y servicio al cliente.</p>
+      <p>La gerencia general ha conformado un <strong>equipo temporal</strong> para proponer mejoras en la colaboración entre áreas. El grupo está integrado por colaboradores con diferentes niveles de experiencia.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon" style="background:rgba(124,58,237,0.1);">⚡</div>
+      La situación crítica
+    </div>
+    <div class="caso-text">
+      <p>Ricardo, jefe de Operaciones con doce años en la empresa, <strong>propone implementar un sistema centralizado de seguimiento de solicitudes</strong>. La mayoría del equipo parece estar de acuerdo rápidamente.</p>
+      <p>Sin embargo, Sofía y Martín —analistas incorporados hace menos de un año— sostienen que <strong>el problema principal no es tecnológico sino relacional</strong>: las áreas carecen de acuerdos claros sobre responsabilidades y tiempos de respuesta.</p>
+    </div>
+    <div class="highlight-box">
+      Observando que la discusión se está cerrando prematuramente, la líder del proyecto debe decidir cómo conducir la reunión.
+    </div>
+  </div>
+
+  <div class="card" style="border-color: rgba(79,70,229,0.3); background: rgba(79,70,229,0.03);">
+    <div class="card-title" style="font-size: 1.05rem;">
+      <div class="card-icon" style="background:rgba(79,70,229,0.12);">❓</div>
+      Decisión en juego
+    </div>
+    <p style="font-size:0.95rem; color: #312E81; font-weight: 500; line-height: 1.65;">
+      ¿Debe la líder del proyecto abrir nuevamente el debate o aprovechar el consenso inicial para avanzar?
+    </p>
+  </div>
+
+</section>
+
+<!-- TAB 2: ACTORES -->
+<section id="tab-actores" class="section">
+  <div class="card">
+    <div class="card-title">👥 Mapa de actores</div>
+    <p style="font-size:0.87rem; color:#6B7280; margin-bottom:1.25rem;">Cada actor representa una posición y un nivel de influencia distintos en la dinámica del equipo.</p>
+    <div class="persona-grid">
+
+      <div class="persona-card">
+        <div class="persona-avatar" style="background:rgba(79,70,229,0.1); color:#4F46E5;">RP</div>
+        <div class="persona-name">Ricardo Palomino</div>
+        <div class="persona-role" style="color:#4F46E5;">Jefe de Operaciones</div>
+        <div class="persona-desc">12 años en la empresa. Alta credibilidad institucional por participación en proyectos exitosos. Propone solución tecnológica centralizada.</div>
+        <span class="tag" style="background:rgba(79,70,229,0.1); color:#4338CA;">Alta influencia · Subsistema técnico</span>
+      </div>
+
+      <div class="persona-card">
+        <div class="persona-avatar" style="background:rgba(5,150,105,0.1); color:#059669;">SF</div>
+        <div class="persona-name">Sofía</div>
+        <div class="persona-role" style="color:#059669;">Analista (< 1 año)</div>
+        <div class="persona-desc">Perspectiva fresca sobre la organización. Identifica déficit relacional como causa raíz. Voz cuestionada por falta de trayectoria.</div>
+        <span class="tag" style="background:rgba(5,150,105,0.1); color:#047857;">Baja influencia · Subsistema social</span>
+      </div>
+
+      <div class="persona-card">
+        <div class="persona-avatar" style="background:rgba(5,150,105,0.1); color:#059669;">MT</div>
+        <div class="persona-name">Martín</div>
+        <div class="persona-role" style="color:#059669;">Analista (< 1 año)</div>
+        <div class="persona-desc">Aliado de Sofía en el diagnóstico relacional. Su coincidencia con Sofía refuerza la hipótesis social, aunque ambos tienen escasa acumulación institucional.</div>
+        <span class="tag" style="background:rgba(5,150,105,0.1); color:#047857;">Baja influencia · Subsistema social</span>
+      </div>
+
+      <div class="persona-card" style="border-color:rgba(124,58,237,0.3);">
+        <div class="persona-avatar" style="background:rgba(124,58,237,0.1); color:#7C3AED;">LP</div>
+        <div class="persona-name">Líder del proyecto</div>
+        <div class="persona-role" style="color:#7C3AED;">Conductora de la reunión</div>
+        <div class="persona-desc">Observa el cierre prematuro del debate. Debe decidir si facilitar una deliberación más abierta o capitalizar el consenso para avanzar con rapidez.</div>
+        <span class="tag" style="background:rgba(124,58,237,0.12); color:#6D28D9;">Rol pivote · Gestión del proceso</span>
+      </div>
+
+      <div class="persona-card" style="grid-column: 1 / -1;">
+        <div class="persona-avatar" style="background:rgba(107,114,128,0.12); color:#4B5563;">RM</div>
+        <div class="persona-name">Resto del equipo</div>
+        <div class="persona-role" style="color:#6B7280;">Mayoría silenciosa</div>
+        <div class="persona-desc">Parece estar de acuerdo con Ricardo rápidamente. No queda claro si es convicción genuina o efecto de la influencia social de una figura respetada (conformidad informacional o normativa).</div>
+        <span class="tag" style="background:rgba(107,114,128,0.1); color:#374151;">Influencia mediada · Comportamiento grupal</span>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🔍 Fenómenos organizacionales presentes</div>
+    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); gap:0.75rem;">
+      <div style="background:rgba(220,38,38,0.06); border-radius:10px; padding:0.9rem;">
+        <div style="font-family:'Syne',sans-serif; font-weight:700; font-size:0.82rem; color:#7F1D1D; margin-bottom:4px;">Pensamiento grupal (groupthink)</div>
+        <div style="font-size:0.8rem; color:#374151; line-height:1.5;">Presión implícita hacia el consenso que inhibe el disenso constructivo.</div>
+      </div>
+      <div style="background:rgba(217,119,6,0.06); border-radius:10px; padding:0.9rem;">
+        <div style="font-family:'Syne',sans-serif; font-weight:700; font-size:0.82rem; color:#92400E; margin-bottom:4px;">Autoridad basada en trayectoria</div>
+        <div style="font-size:0.8rem; color:#374151; line-height:1.5;">El peso de la experiencia acumulada puede distorsionar la evaluación racional de las ideas.</div>
+      </div>
+      <div style="background:rgba(79,70,229,0.06); border-radius:10px; padding:0.9rem; grid-column: 1 / -1;">
+        <div style="font-family:'Syne',sans-serif; font-weight:700; font-size:0.82rem; color:#312E81; margin-bottom:10px;">Diversidad epistémica</div>
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(170px,1fr)); gap:0.6rem;">
+          <div style="background:rgba(79,70,229,0.07); border-radius:8px; padding:0.7rem;">
+            <div style="font-family:'Syne',sans-serif; font-weight:700; font-size:0.76rem; color:#4338CA; margin-bottom:4px;">Aportes de nuevos analistas</div>
+            <div style="font-size:0.78rem; color:#374151; line-height:1.5;">Sofía y Martín, al no estar condicionados por la historia institucional, pueden identificar patrones que los actores con mayor trayectoria ya naturalizaron.</div>
+          </div>
+          <div style="background:rgba(79,70,229,0.07); border-radius:8px; padding:0.7rem;">
+            <div style="font-family:'Syne',sans-serif; font-weight:700; font-size:0.76rem; color:#4338CA; margin-bottom:4px;">Atención a la solución técnica</div>
+            <div style="font-size:0.78rem; color:#374151; line-height:1.5;">El sistema centralizado propuesto por Ricardo puede resolver la visibilidad de las solicitudes, pero no modifica los acuerdos sobre quién responde, en qué plazo y con qué criterios.</div>
+          </div>
+          <div style="background:rgba(79,70,229,0.07); border-radius:8px; padding:0.7rem;">
+            <div style="font-family:'Syne',sans-serif; font-weight:700; font-size:0.76rem; color:#4338CA; margin-bottom:4px;">Atención a las relaciones</div>
+            <div style="font-size:0.78rem; color:#374151; line-height:1.5;">El diagnóstico relacional señala que las áreas no tienen claridad sobre sus responsabilidades mutuas. Una solución sin ese acuerdo previo replica el conflicto en un soporte tecnológico.</div>
+          </div>
+        </div>
+      </div>
+      <div style="background:rgba(5,150,105,0.06); border-radius:10px; padding:0.9rem;">
+        <div style="font-family:'Syne',sans-serif; font-weight:700; font-size:0.82rem; color:#065F46; margin-bottom:4px;">Solución técnica vs. causa relacional</div>
+        <div style="font-size:0.8rem; color:#374151; line-height:1.5;">Tensión nuclear del caso: ¿se interviene el síntoma (coordinación) o la causa (acuerdos)?</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TAB 3: ESCENARIOS -->
+<section id="tab-escenarios" class="section">
+  <div class="decision-central">
+    <h3>Punto de decisión crítico</h3>
+    <p>La líder enfrenta dos caminos con consecuencias organizacionales distintas. Cada escenario activa dinámicas diferentes en el subsistema social y técnico.</p>
+  </div>
+
+  <div class="escenario-grid">
+    <div class="escenario-card opcion-a">
+      <div class="escenario-title" style="color:#065F46;">
+        <span style="font-size:1.1rem;">🔓</span>
+        Escenario A
+        <span class="escenario-badge" style="background:rgba(5,150,105,0.15); color:#065F46;">Abrir el debate</span>
+      </div>
+      <p style="font-size:0.82rem; color:#374151; margin-bottom:0.75rem; line-height:1.55;">La líder detiene el cierre prematuro, devuelve la palabra al equipo y estructura una deliberación que incluya el diagnóstico relacional antes de tomar una decisión.</p>
+      <ul class="escenario-list">
+        <li><span class="dot" style="background:#059669;"></span>Se validan perspectivas de Sofía y Martín.</li>
+        <li><span class="dot" style="background:#059669;"></span>Se genera un diagnóstico más completo del problema.</li>
+        <li><span class="dot" style="background:#059669;"></span>Se reduce el riesgo de una solución técnica sin base relacional.</li>
+        <li><span class="dot" style="background:#D97706;"></span>Puede generar tensión con Ricardo.</li>
+        <li><span class="dot" style="background:#D97706;"></span>Retrasa la decisión en un contexto de urgencia.</li>
+      </ul>
+    </div>
+
+    <div class="escenario-card opcion-b">
+      <div class="escenario-title" style="color:#7F1D1D;">
+        <span style="font-size:1.1rem;">🔒</span>
+        Escenario B
+        <span class="escenario-badge" style="background:rgba(220,38,38,0.12); color:#7F1D1D;">No abrir el debate</span>
+      </div>
+      <p style="font-size:0.82rem; color:#374151; margin-bottom:0.75rem; line-height:1.55;">La líder capitaliza el consenso inicial y avanza con la propuesta de Ricardo, asumiendo que el acuerdo refleja convicción del equipo y que la urgencia justifica la celeridad.</p>
+      <ul class="escenario-list">
+        <li><span class="dot" style="background:#059669;"></span>Decisión más rápida, respuesta inmediata a la urgencia.</li>
+        <li><span class="dot" style="background:#059669;"></span>Se preserva la relación con Ricardo.</li>
+        <li><span class="dot" style="background:#DC2626;"></span>Se pierde el diagnóstico relacional.</li>
+        <li><span class="dot" style="background:#DC2626;"></span>Se refuerza la dependencia de una sola voz experta.</li>
+        <li><span class="dot" style="background:#DC2626;"></span>Se desalienta la contribución futura de nuevos colaboradores.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:1.25rem;">
+    <div class="card-title">
+      <div class="card-icon" style="background:rgba(124,58,237,0.1);">🔀</div>
+      Escenario C — Solución híbrida
+    </div>
+    <p style="font-size:0.87rem; color:#374151; line-height:1.6; margin-bottom:0.75rem;">Existe un tercer camino: la líder puede avanzar con una decisión provisoria sobre la propuesta técnica de Ricardo, <strong>condicionada</strong> a que el equipo complete un diagnóstico de los acuerdos de responsabilidad en una sesión posterior. Esto evita el falso dilema velocidad vs. calidad.</p>
+    <div style="display:flex; gap:0.75rem; flex-wrap:wrap;">
+      <div style="flex:1; min-width:160px; background:rgba(79,70,229,0.06); border-radius:10px; padding:0.85rem;">
+        <div style="font-family:'Syne',sans-serif; font-weight:700; font-size:0.8rem; color:#4F46E5; margin-bottom:4px;">Ventaja</div>
+        <div style="font-size:0.8rem; color:#374151;">Permite avanzar sin descartar el diagnóstico relacional. No polariza al equipo.</div>
+      </div>
+      <div style="flex:1; min-width:160px; background:rgba(217,119,6,0.06); border-radius:10px; padding:0.85rem;">
+        <div style="font-family:'Syne',sans-serif; font-weight:700; font-size:0.8rem; color:#92400E; margin-bottom:4px;">Riesgo</div>
+        <div style="font-size:0.8rem; color:#374151;">La sesión posterior puede nunca concretarse si la urgencia vuelve a imponerse.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TAB 4: GRILLA + RIESGOS INTEGRADOS -->
+<section id="tab-grilla" class="section">
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon" style="background:rgba(79,70,229,0.1);">⊞</div>
+      Grilla empresarial — Urgencia × Calidad del diagnóstico
+    </div>
+    <p class="grilla-desc">Seleccione un cuadrante para ver los riesgos y oportunidades asociados a esa posición decisional.</p>
+
+    <div style="text-align:center; margin-bottom:4px;">
+      <span style="font-family:'Syne',sans-serif; font-size:0.7rem; font-weight:700; color:#6B7280; letter-spacing:0.03em;">← Diagnóstico parcial · · · Diagnóstico completo →</span>
+    </div>
+    <div class="grilla-layout">
+      <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; width:30px;">
+        <span style="font-family:'Syne',sans-serif; font-size:0.62rem; font-weight:700; color:#6B7280; writing-mode:vertical-lr; transform:rotate(180deg); white-space:nowrap;">↑ Alta urgencia · Baja urgencia ↓</span>
+      </div>
+      <div class="grilla-right">
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">
+          <div class="cuadrante cuadrante-q2" id="q2" onclick="selectQ('q2')">
+            <div class="cuadrante-label">⚡ Decisión rápida</div>
+            <div style="font-family:'Syne',sans-serif; font-size:0.7rem; font-weight:700; color:#B45309; margin:4px 0 2px;">Escenario B · No abrir el debate</div>
+            <div class="cuadrante-desc" style="margin-bottom:5px;">Alta urgencia · diagnóstico parcial</div>
+            <div style="font-size:0.73rem; line-height:1.4; color:#92400E;">Se actúa antes de completar el diagnóstico. La presión del tiempo prima sobre la calidad del análisis.</div>
+          </div>
+          <div class="cuadrante cuadrante-q1" id="q1" onclick="selectQ('q1')">
+            <div class="cuadrante-label">✅ Zona ideal</div>
+            <div style="font-family:'Syne',sans-serif; font-size:0.7rem; font-weight:700; color:#047857; margin:4px 0 2px;">Escenario C · Solución híbrida</div>
+            <div class="cuadrante-desc" style="margin-bottom:5px;">Alta urgencia · diagnóstico completo</div>
+            <div style="font-size:0.73rem; line-height:1.4; color:#047857;">La líder aprueba provisionalmente la propuesta técnica de Ricardo, pero la condiciona a completar un diagnóstico relacional en una sesión posterior. Avanza sin descartar el subsistema social.</div>
+          </div>
+          <div class="cuadrante cuadrante-q4" id="q4" onclick="selectQ('q4')">
+            <div class="cuadrante-label">🚫 Zona crítica</div>
+            <div style="font-family:'Syne',sans-serif; font-size:0.7rem; font-weight:700; color:#991B1B; margin:4px 0 2px;">Sin conducción del proceso</div>
+            <div class="cuadrante-desc" style="margin-bottom:5px;">Baja urgencia · diagnóstico parcial</div>
+            <div style="font-size:0.73rem; line-height:1.4; color:#991B1B;">La líder no estructura el debate ni define criterios. El equipo deriva sin rumbo: nadie cuestiona, nadie decide, y el problema de coordinación persiste.</div>
+          </div>
+          <div class="cuadrante cuadrante-q3" id="q3" onclick="selectQ('q3')">
+            <div class="cuadrante-label">🔍 Deliberación</div>
+            <div style="font-family:'Syne',sans-serif; font-size:0.7rem; font-weight:700; color:#C2410C; margin:4px 0 2px;">Escenario A · Debate abierto y extendido</div>
+            <div class="cuadrante-desc" style="margin-bottom:5px;">Baja urgencia · diagnóstico completo</div>
+            <div style="font-size:0.73rem; line-height:1.4; color:#C2410C;">Se abre el debate sin límite temporal claro. Permite un diagnóstico profundo de ambos subsistemas, pero exige disciplina de cierre para no diluirse en discusión indefinida.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="q-detail" class="cuadrante-detail" style="display:none;"></div>
+  </div>
+</section>
+
+<!-- TAB 6: REFLEXIÓN / EVALUACIÓN -->
+<section id="tab-reflexion" class="section">
+  <div class="card">
+    <div class="card-title">🎯 Evaluación según escenario elegido</div>
+    <p style="font-size:0.87rem; color:#6B7280; margin-bottom:1.5rem;">Elija manualmente el escenario de conducción. La herramienta mostrará el diagnóstico asociado a la grilla de riesgos y dos preguntas de reflexión para orientar la discusión.</p>
+
+    <div class="escenario-selector" role="group" aria-label="Escenarios de evaluación">
+      <button class="eval-option" data-eval="a" onclick="selectEvaluation('a')">
+        <div class="eval-option-title">Escenario A</div>
+        <div class="eval-option-meta">Abrir el debate · diagnóstico completo con baja urgencia</div>
+      </button>
+      <button class="eval-option" data-eval="b" onclick="selectEvaluation('b')">
+        <div class="eval-option-title">Escenario B</div>
+        <div class="eval-option-meta">Avanzar con Ricardo · decisión rápida con diagnóstico parcial</div>
+      </button>
+      <button class="eval-option" data-eval="c" onclick="selectEvaluation('c')">
+        <div class="eval-option-title">Escenario C</div>
+        <div class="eval-option-meta">Solución híbrida · urgencia alta con diagnóstico completo</div>
+      </button>
+      <button class="eval-option" data-eval="d" onclick="selectEvaluation('d')">
+        <div class="eval-option-title">Escenario D</div>
+        <div class="eval-option-meta">Posponer la decisión · riesgo de indefinición del proceso</div>
+      </button>
+    </div>
+
+    <button class="reset-btn" onclick="resetEvaluation()">↺ Reiniciar evaluación</button>
+  </div>
+
+  <div id="diagnostico-panel" class="diagnostico-box" style="background:rgba(220,38,38,0.06); border-color:rgba(220,38,38,0.2);">
+    <div class="diagnostico-titulo" style="color:#7F1D1D;">Diagnóstico del escenario</div>
+    <div id="diagnostico-texto" class="diagnostico-desc" style="color:#374151;">
+      Seleccione un escenario para revisar sus riesgos, oportunidades y preguntas de reflexión.
+    </div>
+  </div>
+
+  <div class="pregunta-box" id="reflection-questions">
+    <h4>Preguntas de reflexión</h4>
+    <p>Elija un escenario para ver dos preguntas guía tomadas del documento adjunto.</p>
+  </div>
+</section>
+
+<script>
+function showTab(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  event.currentTarget.classList.add('active');
+}
+
+const qData = {
+  q1: {
+    title: '✅ Zona ideal — Escenario C (híbrido)',
+    riesgos: ['La sesión posterior de diagnóstico relacional puede no concretarse si la urgencia vuelve a imponerse.', 'Requiere habilidades de facilitación exigentes para integrar ambos subsistemas en poco tiempo.'],
+    oportunidades: ['Permite avanzar con velocidad sin descartar el diagnóstico relacional.', 'Genera compromiso amplio del equipo al no polarizar entre Ricardo y los analistas nuevos.', 'Produce una decisión con base analítica sólida y acuerdo genuino.']
+  },
+  q2: {
+    title: '⚡ Decisión rápida — Escenario B (no abrir el debate)',
+    riesgos: ['Implementar tecnología sin resolver los acuerdos de responsabilidad entre áreas.', 'Reforzar la dependencia del equipo en una sola voz experta.', 'Desincentivar futuras contribuciones de colaboradores nuevos.'],
+    oportunidades: ['Respuesta ágil a la urgencia operativa.', 'Preserva la relación con Ricardo y su capital social en el equipo.', 'Mantiene el impulso hacia la acción concreta.']
+  },
+  q3: {
+    title: '🔍 Deliberación profunda — Escenario A extendido',
+    riesgos: ['Riesgo de sobreanálisis si no se establece un plazo concreto de decisión.', 'La urgencia real puede ignorarse, afectando la credibilidad del equipo.'],
+    oportunidades: ['Diagnóstico completo integrando subsistema técnico y social.', 'Alta apropiación del equipo sobre la solución resultante.', 'Establece norma de disenso constructivo para futuras decisiones.']
+  },
+  q4: {
+    title: '🚫 Zona crítica — Sin liderazgo efectivo',
+    riesgos: ['Reuniones sin resultados concretos ni avances visibles.', 'Frustración acumulada y pérdida de credibilidad ante la gerencia.', 'El problema de coordinación continúa sin intervención.'],
+    oportunidades: ['El reconocimiento de esta situación puede motivar al equipo a redefinir su mandato y estructura de trabajo.']
+  }
+};
+
+const escenarioPorCuadrante = { q1: 'c', q2: 'b', q3: 'a', q4: 'd' };
+
+const EVALUACION_DATA = {
+  a: {
+    qId: 'q3',
+    title: 'Escenario A — Abrir el debate',
+    texto: 'Abrir el debate aumenta la calidad del diagnóstico y puede fortalecer la creatividad colectiva, porque permite que aparezcan datos técnicos y relacionales que el consenso inicial ocultaba. Su riesgo principal es perder foco o alargar la decisión sin un plazo de cierre claro.',
+    color:'#C2410C',
+    bg:'rgba(234,88,12,0.06)',
+    border:'rgba(234,88,12,0.22)',
+    preguntas: [
+      '¿Qué información podría aparecer que actualmente no está siendo considerada?',
+      '¿Existe el riesgo de confundir apertura con falta de dirección?'
+    ]
+  },
+  b: {
+    qId: 'q2',
+    title: 'Escenario B — Avanzar con la propuesta de Ricardo',
+    texto: 'Avanzar con Ricardo responde a la urgencia operativa y preserva el impulso de acción, pero trabaja con un diagnóstico parcial. El costo organizacional puede aparecer más tarde si la propuesta técnica no resuelve los acuerdos de responsabilidad, influencia y coordinación entre áreas.',
+    color:'#92400E',
+    bg:'rgba(217,119,6,0.06)',
+    border:'rgba(217,119,6,0.24)',
+    preguntas: [
+      '¿Qué podría ocurrir si Ricardo está equivocado?',
+      '¿Cuándo confiar en expertos se convierte en un riesgo?'
+    ]
+  },
+  c: {
+    qId: 'q1',
+    title: 'Escenario C — Solución híbrida',
+    texto: 'La solución híbrida intenta equilibrar velocidad y calidad diagnóstica: permite actuar sin clausurar el análisis del subsistema social. Su viabilidad depende de que la segunda etapa no quede como promesa vaga y tenga responsables, tiempos y criterios de cierre.',
+    color:'#065F46',
+    bg:'rgba(5,150,105,0.06)',
+    border:'rgba(5,150,105,0.22)',
+    preguntas: [
+      '¿Qué mecanismos serían necesarios para asegurar que el diagnóstico posterior ocurra?',
+      '¿Cuándo una solución intermedia representa integración y cuándo representa evasión?'
+    ]
+  },
+  d: {
+    qId: 'q4',
+    title: 'Escenario D — Posponer la decisión',
+    texto: 'Posponer la decisión puede ser prudente si existe información adicional realmente decisiva, pero se vuelve crítico cuando opera como falta de conducción. En la grilla, este escenario se acerca a la zona de baja urgencia y diagnóstico parcial: el equipo no avanza, la coordinación sigue abierta y la autoridad de la líder se erosiona.',
+    color:'#7F1D1D',
+    bg:'rgba(220,38,38,0.06)',
+    border:'rgba(220,38,38,0.22)',
+    preguntas: [
+      '¿Cómo distinguir prudencia de indecisión?',
+      '¿En qué momento el análisis deja de aportar valor?'
+    ]
+  }
+};
+
+let selectedEvaluationId = null;
+
+function selectQ(id, syncEvaluation = true) {
+  document.querySelectorAll('.cuadrante').forEach(c => c.classList.remove('selected'));
+  document.getElementById(id).classList.add('selected');
+  const d = qData[id];
+  const panel = document.getElementById('q-detail');
+  panel.style.display = 'block';
+  panel.innerHTML = `
+    <div class="detail-title">${d.title}</div>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.75rem;">
+      <div>
+        <div style="font-family:'Syne',sans-serif; font-size:0.75rem; font-weight:700; color:#7F1D1D; text-transform:uppercase; letter-spacing:0.04em; margin-bottom:6px;">⚠ Riesgos</div>
+        ${d.riesgos.map(r => `<div style="font-size:0.81rem; color:#374151; padding:5px 0; border-bottom:1px solid rgba(220,38,38,0.08); line-height:1.45;"><span style="color:#DC2626; font-weight:700; margin-right:5px;">—</span>${r}</div>`).join('')}
+      </div>
+      <div>
+        <div style="font-family:'Syne',sans-serif; font-size:0.75rem; font-weight:700; color:#065F46; text-transform:uppercase; letter-spacing:0.04em; margin-bottom:6px;">✓ Oportunidades</div>
+        ${d.oportunidades.map(o => `<div style="font-size:0.81rem; color:#374151; padding:5px 0; border-bottom:1px solid rgba(5,150,105,0.08); line-height:1.45;"><span style="color:#059669; font-weight:700; margin-right:5px;">+</span>${o}</div>`).join('')}
+      </div>
+    </div>
+  `;
+  if (syncEvaluation && escenarioPorCuadrante[id]) {
+    renderEvaluation(escenarioPorCuadrante[id], false);
+  }
+}
+
+function selectEvaluation(id) {
+  renderEvaluation(id, true);
+}
+
+function renderEvaluation(id, selectGrid = true) {
+  selectedEvaluationId = id;
+  document.querySelectorAll('.eval-option').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.eval === id);
+  });
+
+  const data = EVALUACION_DATA[id];
+  if (!data) return;
+
+  const panel = document.getElementById('diagnostico-panel');
+  panel.style.background = data.bg;
+  panel.style.borderColor = data.border;
+  panel.querySelector('.diagnostico-titulo').style.color = data.color;
+  panel.querySelector('.diagnostico-titulo').textContent = data.title;
+  document.getElementById('diagnostico-texto').textContent = data.texto;
+
+  document.getElementById('reflection-questions').innerHTML = `
+    <h4>Preguntas de reflexión</h4>
+    <ol>${data.preguntas.map(p => `<li>${p}</li>`).join('')}</ol>
+  `;
+
+  if (selectGrid && data.qId) {
+    selectQ(data.qId, false);
+  }
+}
+
+function resetEvaluation() {
+  selectedEvaluationId = null;
+  document.querySelectorAll('.eval-option').forEach(btn => btn.classList.remove('active'));
+  document.querySelectorAll('.cuadrante').forEach(c => c.classList.remove('selected'));
+  document.getElementById('q-detail').style.display = 'none';
+
+  const panel = document.getElementById('diagnostico-panel');
+  panel.style.background = 'rgba(220,38,38,0.06)';
+  panel.style.borderColor = 'rgba(220,38,38,0.2)';
+  panel.querySelector('.diagnostico-titulo').style.color = '#7F1D1D';
+  panel.querySelector('.diagnostico-titulo').textContent = 'Diagnóstico del escenario';
+  document.getElementById('diagnostico-texto').textContent = 'Seleccione un escenario para revisar sus riesgos, oportunidades y preguntas de reflexión.';
+  document.getElementById('reflection-questions').innerHTML = '<h4>Preguntas de reflexión</h4><p>Elija un escenario para ver dos preguntas guía tomadas del documento adjunto.</p>';
+}
+</script>
+</body>
+</html>
